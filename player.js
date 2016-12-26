@@ -40,9 +40,9 @@ Player.prototype.interact = function() {
 			for (var i = 0 ; i < 8 ; i++) {
 				particles.push(new Particle(this.x+this.width/2, this.y+this.height/2, Math.cos(random(0, Math.PI*2))*3, Math.sin(random(0, Math.PI*2))*3, 6, "rgb(200, 0, 0)"));
 			}
-			wallJump.play();
+			sounds.push(new buzz.sound("soundfx/Wall-Jump.wav").setVolume(20));
 		} else {
-			jump.play();
+			sounds.push(new buzz.sound("soundfx/Jump.wav").setVolume(20));
 		}
 		if (this.clingWall === "left") {
 			this.velX += 6;
@@ -98,10 +98,9 @@ Player.prototype.interact = function() {
 Player.prototype.collide = function(velX, velY) {
 	for (var i = 0 ; i < coins[level].length ; i++) {
 		if (cornerCenter(this, coins[level][i])) {
-			coin.play();
+			sounds.push(new buzz.sound("soundfx/Coin.wav").setVolume(30));
 			this.coinFadeTimer = 50;
 			coins[level].splice(i, 1);
-			
 		}
 	}
 	for (var i = 0 ; i < orbs[level].length ; i++) {
@@ -186,10 +185,9 @@ Player.prototype.collide = function(velX, velY) {
 				}
 				
 				if (keys["ArrowUp"]) {
-					jump.stop();
-					bboing.play();
+					sounds.push(new buzz.sound("soundfx/Big-Boing.wav").setVolume(100));
 				} else {
-					boing.play();
+					sounds.push(new buzz.sound("soundfx/Boing.wav").setVolume(100));
 				}
 				
             }
@@ -212,6 +210,7 @@ Player.prototype.collide = function(velX, velY) {
             if (velY > 0) {
                 this.velY = 0;
                 this.die();
+				break;
             }
             if (velY < 0) {
                 this.velY = 0;
@@ -224,7 +223,7 @@ Player.prototype.collide = function(velX, velY) {
 			this.die();
 		}
 		if (rectCollide(this, blocks[level][i]) && (blocks[level][i].type === "portal")) {
-			portal.play();
+			sounds.push(new buzz.sound("soundfx/Portal.wav").setVolume(40));
 			level++;
 			for (var i = 0 ; i < levels[level].length ; i++) {
 				for (var t = 0 ; t < levels[level][i].length ; t++) {
@@ -244,10 +243,20 @@ Player.prototype.collide = function(velX, velY) {
 			break;
 		}
 	}
+	for (var i = 0 ; i < enemies[level].length ; i++) {
+		if (rectCollide(this, enemies[level][i]) && enemies[level][i].type() === "strotter") {
+			if (velY > 0) {
+				this.velY-=10;
+				enemies[level][i].die();
+			} else {
+				this.die();
+			}
+		} 
+	}
 }
 
 Player.prototype.die = function() {
-	dead.play();
+	sounds.push(new buzz.sound("soundfx/Dead.wav").setVolume(60));
 	for (var i = 0 ; i < 20 ; i++) {
 		particles.push(new Particle(this.x+this.width/2, this.y+this.height/2, Math.cos(random(0, Math.PI*2))*3, Math.sin(random(0, Math.PI*2))*3, 10, "rgb(200, 0, 0)"));
 	}

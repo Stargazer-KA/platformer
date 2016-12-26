@@ -12,26 +12,10 @@ var spawn = {
 }
 var bSquares = [];
 
-{
-	var music = new buzz.sound("music/Nowhere-Land.mp3");
-	music.setVolume(20).loop().play();
-	var jump = new buzz.sound("soundfx/Jump.wav");
-	jump.setVolume(20);
-	var wallJump = new buzz.sound("soundfx/Wall-Jump.wav");
-	wallJump.setVolume(20);
-	var coin = new buzz.sound("soundfx/Coin.wav");
-	coin.setVolume(30);
-	var coin2 = new buzz.sound("soundfx/Coin2.wav");
-	coin2.setVolume(30);
-	var portal = new buzz.sound("soundfx/Portal.wav");
-	portal.setVolume(40);
-	var dead = new buzz.sound("soundfx/Dead.wav");
-	dead.setVolume(60);
-	var boing = new buzz.sound("soundfx/Boing.wav");
-	boing.setVolume(100);
-	var bboing = new buzz.sound("soundfx/Big-Boing.wav");
-	bboing.setVolume(100);
-}
+var sounds = [];
+
+var music = new buzz.sound("music/Nowhere-Land.mp3");
+music.setVolume(20).loop().play();
 
 var Camera = {}
 
@@ -65,267 +49,37 @@ var orbs = [];
 var level = 0;
 
 var messages = [
-	[
-		{x: 100, y: 300, message: "Welcome to my world", size: 40},
-		{x: 300, y: 340, message: "Use LEFT and RIGHT to move, and UP for jump.", size: 20},
-		{x: 400, y: 380, message: "I hope you find your stay enjoyable", size: 20},
-		{x: 815, y: 500, message: "Touch this to continue", size: 15}
-	],
-	[	
-		{x: 100, y: 500, message: "I'm travelling to meet the king. Many safeguards have been placed to keep intruders out.", size: 25},
-		{x: 700, y: 550, message: "Its a dangerous path, spikes and lava everywhere", size: 20}
-	],
-	[
-		{x: 300, y: 300, message: "I can wall jump to get to higher places.", size: 20},
-		{x: 300, y: 340, message: "Just cling onto a wall with LEFT or RIGHT then press UP", size: 20},
-		{x: 300, y: 380, message: "You can essentially infinitely scale walls this way", size: 20},
-		{x: 600, y: 210, message: "A coin! Grab it! There's one in every level.", size: 15},
-	],
-	[
-		{x: 300, y: 300, message: "The journey will be dangerous...", size: 30},
-		{x: 320, y: 340, message: "but I have to meet the king.", size: 20}
-	],
-	[
-		{x: 60, y: 700, message: "Jumping while on the blue pads really propells me upwards.", size: 20},
-		{x: 60, y: 720, message: "(also, avoid the electric orbs. they kill you)", size: 18}
-	],
-	[
-		{x:500, y:300, message: "Some blocks are just illusions...", size:25}
-	],
-	[
-		{x:200, y:200, message: "So much lava in a place like this?!", size: 30},
-		{x:250, y:250, message: "That's definitely unnatural, definitely a trap set by the king", size: 25},
-		{x:300, y:300, message: "It's almost as if he's trying to keep me out...", size: 30}
-	],
-	[
-		
-	]
+	[]
 ];
 
 var levels = [
 	[
-		"....................................",
-		".                                  .",
-		".     c                            .",
-		".   ....                           .",
-		".                                  .",
-		".                                  .",
-		".                                  .",
-		".                                  .",
-		".                                  .",
-		".                                  .",
-		".                                  .",
-		".                                  .",
-		".                                  .",
-		".                                  .",
-		".                                  .",
-		".                                  .",
-		".                                  .",
-		".                                  .",
-		".                                  .",
-		".   P                             p.",
-		".                                  .",
-		".                                  .",
-		"...................................."
-	],
-	[
-		"....................................................",
-		".                                                  .",
-		".                                                  .",
-		".                                                  .",
-		".                                                  .",
-		".                       c                          .",
-		".                                                  .",
-		".:::::........................................:::::.",
-		".                                                  .",
-		".                                                  .",
-		".                                                  .",
-		".                                                  .",
-		".                                                  .",
-		".                                                  .",
-		".                                                  .",
-		".                                                  .",
-		".                                                  .",
-		".                                                  .",
-		".                                                  .",
-		".                                                  .",
-		".                                                  .",
-		".                                                  .",
-		".                                                  .",
-		".                                                  .",
-		".                                                  .",
-		".  P                                              p.",
-		".                              s^s   .llll.        .",
-		"...................................................."
-	],
-	[
-		"....................................",
-		".                                  .",
-		".                                 p.",
-		".                                  .",
-		".                                  .",
-		".                                  .",
-		".         ..........................",
-		".                                  .",
-		".                                  .",
-		".                             c    .",
-		".                                  .",
-		".                                  .",
-		".                                  .",
-		".                                  .",
-		".                                  .",
-		".                                  .",
-		".                                  .",
-		".                                  .",
-		"..........................         .",
-		".                                  .",
-		".  P                               .",
-		".                                  .",
-		"...................................."
-	],
-	[
-		".......................................................................",
-		".                                                                     .",
-		".                                                                     .",
-		".                             .                                       .",
-		".                             .                                       .",
-		".                      p      .                                       .",
-		".                      ...    .      ...         ...                  .",
-		".                                                           ...       .",
-		".                                                                     .",
-		".                                                                     .",
-		".                                                                     .",
-		".                                                                     .",
-		".                                                                    ^.",
-		".                                                                    ..",
-		".                                                                  ^...",
-		".                                                                  ....",
-		".                                                                ^.....",
-		".                                          s^^....:....................",
-		".  P                           s  ................        .............",
-		".             ......llllllllll....................      c .............",
-		".......................................................................",
-	],
-	[
-		"......................................",
-		".                                    .",
-		".                                    .",
-		".                                    .",
-		".                                    .",
-		".                                    .",
-		".             p                      .",
-		".  ..................                .",
-		".  .                                 .",
-		".  .                          b      .",
-		".  .                          .      .",
-		".  .                                 .",
-		".  .                                 .",
-		".  .                                 .",
-		".  .   c               e             .",
-		".  .                                 .",
-		".  .                                 .",
-		".............. b                     .",
-		".              e                     .",
-		".                                    .",
-		".                                    .",
-		".                             b      .",
-		".                             ........",
-		".                                    .",
-		".                    b               .",
-		".                    .               .",
-		".                                    .",
-		".                                    .",
-		".                         e          .",
-		".                                    .",
-		".                            .........",
-		".                 b                  .",
-		".                 .                  .",
-		".                .                   .",
-		".   P           .                    .",
-		".              .                     .",
-		".             .                      .",
-		"......................................"
-	],
-	[
-		"............................................",
-		".                                          .",
-		".          c                               .",
-		".                                          .",
-		".::::....                                  .",
-		".                                          .",
-		".                                          .",
-		".                                          .",
-		".                                          .",
-		".                                          .",
-		".                                          .",
-		".                                          .",
-		".                                          .",
-		".                .                         .",
-		".            .    ::::::::                 .",
-		". P       ..lllllllllllllll..           :::.",
-		".     ......lllllllllllllll.....        :  .",
-		".  .............................        : p.",
-		"............................................"
-	],
-	[
-		"................................................................................................",
-		".                                                                                              .",
-		".                      c                                                                       .",
-		".                    .............                                                             .",
-		".                                .                                                             .",
-		".                                .                                                             .",
-		".                                .                                                             .",
-		".                                .                                                             .",
-		".                                                                                              .",
-		".                                    .                                                         .",
-		".                                                                                              .",
-		".                                             .                                                .",
-		".  P                                                                                           .",
-		".                                                .                                             .",
-		".                                                                                           p  .",
-		"....................      .                             .                        ...............",
-		"...................                          .                                     .............",
-		"...................                 .                                            ...............",
-		"....................                                                .             ..............",
-		"...................                                                            .................",
-		"....................                                                              ..............",
-		"..................                                                              ................",
-		"...................                                                              ...............",
-		"....................lllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll...............",
-		"....................llllllllllllllllllllllllllllllllllllllllllllllllllllllllllll................",
-		"................................................................................................",
-	],
-	[
-		".............................................................",
-		".                                                           .",
-		".   P                                                       .",
-		".                                                           .",
-		".............................................               .",
-		".                                                           .",
-		".                                                           .",
-		".                                                   ^^^^^^^^.",
-		".                  ..........................................",
-		".                  .                                        .",
-		".                  .                                        .",
-		".                  .                                        .",
-		".      ^           .                                        .",
-		".      .           .                                     p  .",
-		".         ^        .          ...............................",
-		".         .        .          .                             .",
-		".                  .          .                    c        .",
-		".                  .          .                             .",
-		".   ^              .          .                             .",
-		".   .              .          .                 .           .",
-		".                  .                                        .",
-		".          ^       .                       .                .",
-		".          .               .                                .",
-		".                  ..          .      .                     .",
-		".llllllllllllllllll.                                        .",
-		".llllllllllllllllll.llllllllllllllllllllllllllllllllllllllll.",
-		".llllllllllllllllll.llllllllllllllllllllllllllllllllllllllll.",
-		"............................................................."
+		".......................................",
+		".                                     .",
+		".                                     .",
+		".                                     .",
+		".                                     .",
+		".                                     .",
+		".                                     .",
+		".                                     .",
+		".                                     .",
+		".                                     .",
+		".                                     .",
+		".                                     .",
+		".                                     .",
+		".                                     .",
+		".                                     .",
+		".                                     .",
+		"..                                    .",
+		".                                     .",
+		"..                                S   .",
+		".  P           ........................",
+		".           ^^.........................",
+		"......................................."
 	]
 ];
+
+var enemies = [];
 
 var blocks = [];
             
@@ -333,6 +87,7 @@ for (var i = 0 ; i < levels.length ; i++) {
 	blocks.push([]);
 	orbs.push([]);
 	coins.push([]);
+	enemies.push([]);
 	for (var t = 0 ; t < levels[i].length ; t++) {
 		for (var j = 0 ; j < levels[i][t].length ; j++) {
 			switch(levels[i][t][j]) {
@@ -373,6 +128,10 @@ for (var i = 0 ; i < levels.length ; i++) {
 						spawn.x = j*27;
 						spawn.y = t*27;
 					}
+					break;
+				case "S":
+					enemies[i].push(new Strotter(j*27, t*27, 23, 23));
+					break;
 			}
 		}   
 	}
@@ -459,6 +218,15 @@ Game.prototype.interact = function() {
 		}
 	}
 	
+	for (var i = 0 ; i < enemies[level].length ; i++) {
+		enemies[level][i].draw();
+		enemies[level][i].update();
+		if (enemies[level][i].dead) {
+			enemies[level].splice(i, 1);
+			i--;
+		}
+	}
+	
 	for (var i = 0 ; i < messages[level].length ; i++) {
 		var t = messages[level][i];
 		c.font = t.size+"px Abel";
@@ -489,12 +257,27 @@ Game.prototype.interact = function() {
 	this.dTimer-=1;
 	
 	if (this.dTimer === 0) {
-		portal.play();
+		sounds.push(new buzz.sound("soundfx/Portal.wav").setVolume(40));
+		
 		this.t = 1;
 		bob.x = spawn.x;
 		bob.y = spawn.y;
 		bob.velX = 0;
 		bob.velY = 0;
+		enemies[level] = [];
+	
+		for (var i = 0 ; i < levels.length ; i++) {
+			enemies.push([]);
+			for (var t = 0 ; t < levels[i].length ; t++) {
+				for (var j = 0 ; j < levels[i][t].length ; j++) {
+					switch(levels[i][t][j]) {
+						case "S":
+							enemies[i].push(new Strotter(j*27, t*27, 23, 23));
+							break;
+					}
+				}   
+			}
+		}
 	}
 	
 }
@@ -516,6 +299,10 @@ function draw() {
 		case "game":
 			game.interact();
 			break;
+	}
+	for (var i = 0 ; i < sounds.length ; i++) {
+		sounds[i].play();
+		sounds.splice(i, 1);
 	}
 	frameCount++;
 	window.requestAnimationFrame(draw);
