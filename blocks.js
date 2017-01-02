@@ -1,9 +1,14 @@
 var Block = function(x, y, width, height, type) {
 	this.x = x;
+	this.ox = x;
 	this.y = y;
 	this.width = width;
 	this.height = height;
 	this.type = type;    
+	
+	this.frame = 0;
+	this.isRunning = false;
+	this.destroyed = false;
 };
                         
 Block.prototype.draw = function() {
@@ -63,7 +68,7 @@ Block.prototype.draw = function() {
 			
 			particles.push(new Particle(random(this.x+5, this.x+this.width-5), random(this.y, this.y+this.height-5), 0, random(-2, 0), random(0, 6), "rgb(170, 0, 0)"));
 			break;
-		case "electric":
+		case "electric": 
 			
 			c.fillStyle = "rgb(10, 10, 10)";
 			c.fillRect(this.x, this.y, this.width, this.height);
@@ -72,6 +77,21 @@ Block.prototype.draw = function() {
 			c.beginPath();
 			c.arc(this.x+this.width/2, this.y+this.height/2, this.width/3+random(-1, 1), 0, Math.PI*2, true);
 			c.fill();
+			break;
+		case "breaker":
+			c.fillStyle = "rgb(10, 10, 10)";
+			c.fillRect(this.ox, this.y, this.width, this.height);
 			
+			if (this.frame > 0) {
+				this.ox = this.x+random(-2, 2);
+			}
+			
+			if (this.frame === 60) {
+				this.destroyed = true;
+			}
+			
+			if (this.isRunning) {
+				this.frame++;
+			}
 	}            
 }

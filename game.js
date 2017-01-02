@@ -49,6 +49,8 @@ var orbs = [];
 var level = 0;
 
 var messages = [
+	[],
+	[],
 	[]
 ];
 
@@ -65,17 +67,62 @@ var levels = [
 		".                                     .",
 		".                                     .",
 		".                                     .",
-		".                                     .",
-		".                                     .",
-		".                                     .",
-		".                                     .",
+		".                                S    .",
+		".                          S          .",
+		".                            S        .",
+		".                              S      .",
 		".                                     .",
 		"..                                    .",
 		".                                     .",
-		"..                                S   .",
-		".  P           ........................",
-		".           ^^.........................",
+		"..                    P           S   .",
+		".              ........................",
+		". p          ^.........................",
 		"......................................."
+	],
+	[
+		"............................................",
+		".                                          .",
+		".                                          .",
+		".                               b          .",
+		".                               b          .",
+		".                               b          .",
+		".                               b          .",
+		".                               b          .",
+		".  P                            b        p .",
+		".                               b          .",
+		"..........bbbbbbbbbbbbbbbbbbb...............",
+		"..........                   ...............",
+		"..........                   ...............",
+		"..........                   ...............",
+		"..........                   ...............",
+		"..........                   ...............",
+		"..........                   ...............",
+		"..........lllllllllllllllllll...............",
+		"............................................"
+	],
+	[
+		".................................................................",
+		".ppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp.",
+		".lllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll.",
+		".ppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp.",
+		".lllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll.",
+		".ppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp.",
+		".lllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll.",
+		".ppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp.",
+		".lllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll.",
+		".ppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp.",
+		".lllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll.",
+		".                                                               .",
+		".                                                               .",
+		".                                                               .",
+		".                                                               .",
+		".                                                               .",
+		".                                                               .",
+		".                                                               .",
+		".                                                               .",
+		".  P                                                            .",
+		".                                                               .",
+		"................................................................."
 	]
 ];
 
@@ -93,6 +140,9 @@ for (var i = 0 ; i < levels.length ; i++) {
 			switch(levels[i][t][j]) {
 				case ".":
 					blocks[i].push(new Block(j*27, t*27, 28, 28, "normal"));
+					break;
+				case "b":
+					blocks[i].push(new Block(j*27, t*27, 28, 28, "breaker"));
 					break;
 				case "p":
 					blocks[i].push(new Block(j*27+3, t*27+3, 21, 21, "portal"));
@@ -198,6 +248,14 @@ Game.prototype.interact = function() {
 		if (blocks[level][i].x > -Camera.x+330 && blocks[level][i].x < Camera.x + 360 && blocks[level][i].y > -Camera.y+220 && blocks[level][i].y < Camera.y + 260) {
 			blocks[level][i].draw();
 		}
+		if (blocks[level][i].destroyed) {
+			for (var t = 0 ; t < 5 ; t++) {
+				particles.push(new Particle(blocks[level][i].x+blocks[level][i].width/2, blocks[level][i].y+blocks[level][i].height/2, Math.cos(random(0, Math.PI*2))*3, Math.sin(random(0, Math.PI*2))*3, 10, "rgb(20, 20, 20)"));
+			}
+			blocks[level].splice(i, 1);
+			sounds.push(new buzz.sound("soundfx/Break.wav").setVolume(60));
+			i--;
+		}
 	}
 	
 	for (var i = 0 ; i < coins[level].length ; i++) {
@@ -265,19 +323,26 @@ Game.prototype.interact = function() {
 		bob.velX = 0;
 		bob.velY = 0;
 		enemies[level] = [];
-	
-		for (var i = 0 ; i < levels.length ; i++) {
-			enemies.push([]);
-			for (var t = 0 ; t < levels[i].length ; t++) {
-				for (var j = 0 ; j < levels[i][t].length ; j++) {
-					switch(levels[i][t][j]) {
-						case "S":
-							enemies[i].push(new Strotter(j*27, t*27, 23, 23));
-							break;
-					}
-				}   
+		
+		for (var i = 0 ; i < blocks[level].length ; i++) {
+			if (blocks[level][i].type === "breaker") {
+				blocks[level].splice(i, 1);
+				i--;
 			}
 		}
+		for (var t = 0 ; t < levels[level].length ; t++) {
+			for (var j = 0 ; j < levels[level][t].length ; j++) {
+				switch(levels[level][t][j]) {
+					case "S":
+						enemies[level].push(new Strotter(j*27, t*27, 23, 23));
+						break;
+					case "b":
+						blocks[level].push(new Block(j*27, t*27, 28, 28, "breaker"));
+						break;
+				}
+			}   
+		}
+		
 	}
 	
 }

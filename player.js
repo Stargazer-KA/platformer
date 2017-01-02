@@ -160,6 +160,55 @@ Player.prototype.collide = function(velX, velY) {
 			}
 			continue;
         }
+		if (rectCollide(this, blocks[level][i]) && blocks[level][i].type === "breaker") {
+			blocks[level][i].isRunning = true;
+            if (velX > 0) {
+                this.velX = 0;
+                this.x = blocks[level][i].x-this.width;
+				if (keys["ArrowRight"]) {
+					this.clingWall = "right";
+					if (frameCount%2 === 0 && this.velY > 0.4) {
+						particles.push(new Particle(this.x+this.width, this.y, Math.cos(random(0, Math.PI*2)), Math.sin(random(0, Math.PI*2)), 4, "rgb(10, 10, 10)"));
+					}
+					this.velY/=1.1;
+					if (this.velY > -0.3 && this.velY < 0.3) {
+						this.falling = false;
+					}
+					this.wallJumped = true;
+				} else {
+					this.clingWall = "none";
+				}
+            }
+            if (velX < 0) {
+                this.velX = 0;
+                this.x = blocks[level][i].x+blocks[level][i].width;
+				if (keys["ArrowLeft"]) {
+					this.clingWall = "left";
+					if (frameCount%2 === 0 && this.velY > 0.4) {
+						particles.push(new Particle(this.x, this.y, Math.cos(random(0, Math.PI*2)), Math.sin(random(0, Math.PI*2)), 4, "rgb(10, 10, 10)"));
+					}
+					this.velY/=1.1;
+					if (this.velY > -2 && this.velY < 0.3) {
+						this.falling = false;
+					}
+					this.wallJumped = true;
+				} else {
+					this.clingWall = "none";
+				}
+            }
+            if (velY > 0) {
+                this.velY = 0;
+                this.y = blocks[level][i].y-this.height;
+				this.wallJumped = false;
+				this.falling = false;
+            }
+            if (velY < 0) {
+                this.velY = 0;
+                this.y = blocks[level][i].y+blocks[level][i].height;
+            	this.falling = true;
+			}
+			continue;
+        }
 		if (rectCollide(this, blocks[level][i]) && (blocks[level][i].type === "bounce")) {
             if (velX > 0) {
                 this.velX = 0;
@@ -246,7 +295,7 @@ Player.prototype.collide = function(velX, velY) {
 	for (var i = 0 ; i < enemies[level].length ; i++) {
 		if (rectCollide(this, enemies[level][i]) && enemies[level][i].type() === "strotter") {
 			if (velY > 0) {
-				this.velY-=10;
+				this.velY=-5;
 				enemies[level][i].die();
 			} else {
 				this.die();
