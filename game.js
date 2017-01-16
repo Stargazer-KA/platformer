@@ -112,15 +112,21 @@ var levels = [
 		".lllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll.",
 		".ppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp.",
 		".lllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll.",
+		".ppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp.",
+		".lllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll.",
+		".ppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp.",
+		".lllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll.",
+		".ppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp.",
+		".lllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll.",
+		".ppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp.",
+		".lllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll.",
+		".ppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp.",
+		".lllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll.",
 		".                                                               .",
 		".                                                               .",
 		".                                                               .",
 		".                                                               .",
-		".                                                               .",
-		".                                                               .",
-		".                                                               .",
-		".                                                               .",
-		".  P                                                            .",
+		".  P                                                            .",  
 		".                                                               .",
 		"................................................................."
 	]
@@ -180,7 +186,7 @@ for (var i = 0 ; i < levels.length ; i++) {
 					}
 					break;
 				case "S":
-					enemies[i].push(new Strotter(j*27, t*27, 23, 23));
+					enemies[i].push(new Walker(j*27, t*27, 23, 23));
 					break;
 			}
 		}   
@@ -205,21 +211,6 @@ var Game = function() {
 };
 
 Game.prototype.interact = function() {
-	
-	/*for (var i = 0 ; i < bSquares.length ; i++) {
-		c.fillStyle = bSquares[i].c;
-		var x = bSquares[i].x+Camera.x/4;
-		var y = bSquares[i].y+Camera.y/4;
-		if (x > 700) {
-			var l = x-700-30;
-			x = l;
-		}
-		if (y > 500) {
-			var l = y-500-30;
-			y = l;
-		}
-		c.fillRect(x, y, 30, 30);
-	}*/
 	
 	Camera.x += (bob.x-Camera.x)/5;
     Camera.y += (bob.y-Camera.y)/5;
@@ -334,7 +325,7 @@ Game.prototype.interact = function() {
 			for (var j = 0 ; j < levels[level][t].length ; j++) {
 				switch(levels[level][t][j]) {
 					case "S":
-						enemies[level].push(new Strotter(j*27, t*27, 23, 23));
+						enemies[level].push(new Walker(j*27, t*27, 23, 23));
 						break;
 					case "b":
 						blocks[level].push(new Block(j*27, t*27, 28, 28, "breaker"));
