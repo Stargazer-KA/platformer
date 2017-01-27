@@ -1,7 +1,11 @@
+//Get the canvas element from the html file.
 var canvas = document.getElementById("ctx");
+//Get the context of the canvas and store it in variable c
 var c = canvas.getContext("2d");
+//Set the dimensions of the canvas to 700x500
 canvas.width = 700;
 canvas.height = 500;
+//Defining a frame count, an array for handling key presses, a string for checking which state the program is in, a game object, a spawnpoint  for the player, and an array filled with sqaures for the backdrop.
 var frameCount = 0;
 var keys = [];
 var scene = "game";
@@ -12,26 +16,33 @@ var spawn = {
 }
 var bSquares = [];
 
+//Array for handling multiple sounds at one time.
 var sounds = [];
 
+//Set the music and play it.
 var music = new buzz.sound("music/Nowhere-Land.mp3");
 music.setVolume(20).loop().play();
 
+//Define a camera object.
 var Camera = {}
 
+//Define a random function
 function random(min, max) {
 	var w = max-min;
 	return Math.random()*w+min;	
 }
-            
+
+//Function for checking if object a is colliding with object b if and when objects a and b are anchored to the top right corner.
 function rectCollide(a, b) {
 	return a.x+a.width > b.x && a.y+a.height > b.y && a.x < b.x+b.width && a.y < b.y+b.height;    
 }
 
+//Function for checking if object a is colliding with object b if and when object a is anchored to the top right corner, and object b is anchored to the center of itself.
 function cornerCenter(a, b) {
     return a.x+a.width > b.x-b.width/2 && a.y+a.height > b.y-b.height/2 && a.x < b.x+b.width/2 && a.y < b.y+b.height/2;
 }
 
+//Function for drawing triangles.
 function triangle(x1, y1, x2, y2, x3, y3) {
 	c.beginPath();
 	c.moveTo(x1, y1);
@@ -40,20 +51,24 @@ function triangle(x1, y1, x2, y2, x3, y3) {
 	c.fill();
 }
 
+//Arrays for the particle, coin, and orb entities.
 var particles = [];
 
 var coins = [];
 
 var orbs = [];
-            
+
+//Current level
 var level = 0;
 
+//Array that handles text on screen.
 var messages = [
 	[],
 	[],
 	[]
 ];
 
+//Array that handles levels.
 var levels = [
 	[
 		".......................................",
@@ -99,50 +114,26 @@ var levels = [
 		"..........                   ...............",
 		"..........lllllllllllllllllll...............",
 		"............................................"
-	],
-	[
-		".................................................................",
-		".ppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp.",
-		".lllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll.",
-		".ppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp.",
-		".lllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll.",
-		".ppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp.",
-		".lllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll.",
-		".ppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp.",
-		".lllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll.",
-		".ppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp.",
-		".lllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll.",
-		".ppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp.",
-		".lllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll.",
-		".ppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp.",
-		".lllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll.",
-		".ppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp.",
-		".lllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll.",
-		".ppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp.",
-		".lllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll.",
-		".ppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp.",
-		".lllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll.",
-		".                                                               .",
-		".                                                               .",
-		".                                                               .",
-		".                                                               .",
-		".  P                                                            .",  
-		".                                                               .",
-		"................................................................."
 	]
 ];
 
+//Arrays for the enemy and block entities.
 var enemies = [];
 
 var blocks = [];
-            
+
+//Processes the levels array and turns the text into readable blocks.
 for (var i = 0 ; i < levels.length ; i++) {
+	//Adds empty arrays to arrays filled with entities to seperate entities by level.
 	blocks.push([]);
 	orbs.push([]);
 	coins.push([]);
 	enemies.push([]);
+	//Loop through the rows of the strings.
 	for (var t = 0 ; t < levels[i].length ; t++) {
+		//Loop through the individual characters in the strings.
 		for (var j = 0 ; j < levels[i][t].length ; j++) {
+			//A switch statement based off the character of the current string.
 			switch(levels[i][t][j]) {
 				case ".":
 					blocks[i].push(new Block(j*27, t*27, 28, 28, "normal"));
@@ -159,7 +150,7 @@ for (var i = 0 ; i < levels.length ; i++) {
 				case "s":
 					blocks[i].push(new Block(j*27, t*27+18, 28, 10, "sspike"));
 					break;
-				case "b":
+				case "_":
 					blocks[i].push(new Block(j*27, t*27+23, 28, 5, "bounce"));
 					break;
 				case "l":
@@ -192,12 +183,15 @@ for (var i = 0 ; i < levels.length ; i++) {
 		}   
 	}
 }
-            
+
+//Creates a new instance of player called bob.
 var bob = new Player();
 
+//Sets the Camera x and y to the position of bob.
 Camera.x = bob.x;
 Camera.y = bob.y;
 
+//Creates the sqaures in the background
 for (var i = 0 ; i < 700 ; i+=30) {
 	for (var t = 0 ; t < 500 ; t+=30) {
 		var r = Math.round(random(220, 255));
@@ -205,16 +199,21 @@ for (var i = 0 ; i < 700 ; i+=30) {
 	}
 }
 
+//Game class.
 var Game = function() {
+	//Initiallize two timer variables.
 	this.t = 0;
 	this.dTimer = 0;
 };
 
+//All the stuff going on in the game.
 Game.prototype.interact = function() {
 	
+	//Moves the camera towards the player through easing
 	Camera.x += (bob.x-Camera.x)/5;
     Camera.y += (bob.y-Camera.y)/5;
 	
+	//Limits the camera's movement to within the level
 	if (levels[level][0].length*27 < 700) {
 		Camera.x = (levels[level][0].length*27)/2;
 	} else if (Camera.x < 339) {
@@ -233,8 +232,10 @@ Game.prototype.interact = function() {
 	
 	c.save();
 	
+	//Moves the entities according to the player.
 	c.translate(-Camera.x + 350-bob.width/2, -Camera.y+250-bob.height/2);
 	
+	//Draws all blocks onscreen, and splices broken blocks.
 	for (var i = 0 ; i < blocks[level].length ; i++) {
 		if (blocks[level][i].x > -Camera.x+330 && blocks[level][i].x < Camera.x + 360 && blocks[level][i].y > -Camera.y+220 && blocks[level][i].y < Camera.y + 260) {
 			blocks[level][i].draw();
@@ -249,15 +250,18 @@ Game.prototype.interact = function() {
 		}
 	}
 	
+	//Draws all the coins.
 	for (var i = 0 ; i < coins[level].length ; i++) {
 		coins[level][i].draw();
 	}
 	
+	//Draws all orbs
 	for (var i = 0 ; i < orbs[level].length ; i++) {
 		orbs[level][i].draw();
 		orbs[level][i].update();
 	}
 	
+	//Draws all particles and deletes ones that have disappeared.
 	for (var i = 0 ; i < particles.length ; i++) {
 		particles[i].draw();
 		particles[i].update();
@@ -267,6 +271,7 @@ Game.prototype.interact = function() {
 		}
 	}
 	
+	//Draws all enemies and deletes enemies that are dead
 	for (var i = 0 ; i < enemies[level].length ; i++) {
 		enemies[level][i].draw();
 		enemies[level][i].update();
@@ -276,6 +281,7 @@ Game.prototype.interact = function() {
 		}
 	}
 	
+	//Draws all the messages onscreen 
 	for (var i = 0 ; i < messages[level].length ; i++) {
 		var t = messages[level][i];
 		c.font = t.size+"px Abel";
@@ -283,6 +289,7 @@ Game.prototype.interact = function() {
 		c.fillText(t.message, t.x, t.y);
 	}
 	
+	//If the bob's death timer is above zero, bob is dead and thus the player should not be able to control him.
 	if (this.dTimer < 0) {
 		bob.draw();
 		bob.interact();
@@ -290,31 +297,41 @@ Game.prototype.interact = function() {
 	
 	c.restore();
 	
+	//Display the text with the given size of text and transparency
 	c.font = bob.coinTextSize+"px Abel";
 	c.fillStyle = "rgba(0, 0, 0, "+bob.coinFade+")";
 	c.fillText("Coins: "+bob.coins, 40, 50);
 	
+	//Displays the rectangle that cause the fade when entering a portal
 	c.fillStyle = "rgba(255, 255, 255,"+this.t+")";
 	c.fillRect(0, 0, 700, 500);
 	
+	//Constantly subtract from the transparency of the rectangle
 	this.t-=0.08;
 	
+	//If the transparency of the rectangle becomes less than zero then set it to zero.
 	if (this.t <= 0) {
 		this.t = 0;
 	}
 	
+	//Subtract from the death timer.
 	this.dTimer-=1;
 	
+	//If the deathtimer is at zero, you have respawned.
 	if (this.dTimer === 0) {
+		//Play the portal sound.
 		sounds.push(new buzz.sound("soundfx/Portal.wav").setVolume(40));
 		
+		//Add the fade effect by setting transparency to one.
 		this.t = 1;
+		//Reset variables.
 		bob.x = spawn.x;
 		bob.y = spawn.y;
 		bob.velX = 0;
 		bob.velY = 0;
 		enemies[level] = [];
 		
+		//Respawn blocks and enemies.
 		for (var i = 0 ; i < blocks[level].length ; i++) {
 			if (blocks[level][i].type === "breaker") {
 				blocks[level].splice(i, 1);
@@ -338,32 +355,41 @@ Game.prototype.interact = function() {
 	
 }
 
+//Create a new game instance
 var game = new Game();
 
+//Initiallize the draw function
 function init() {
 	window.requestAnimationFrame(draw);
 }
 
+//Running the init code
 init();
 
+//Draw function
 function draw() {
+	//Draw all the squares in the background
 	for (var i = 0 ; i < bSquares.length ; i++) {
 		c.fillStyle = bSquares[i].c;
 		c.fillRect(bSquares[i].x, bSquares[i].y, 30, 30);
 	}
+	//Run the code from the game instance
 	switch(scene) {
 		case "game":
 			game.interact();
 			break;
 	}
+	//Play sounds
 	for (var i = 0 ; i < sounds.length ; i++) {
 		sounds[i].play();
 		sounds.splice(i, 1);
 	}
+	//Up the framecount every frame
 	frameCount++;
 	window.requestAnimationFrame(draw);
 }
-            
+
+//Handle key events.
 window.addEventListener("keydown", function(e) {
     keys[e.key] = true;
 	e.preventDefault();
