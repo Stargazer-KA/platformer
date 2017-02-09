@@ -51,12 +51,14 @@ function triangle(x1, y1, x2, y2, x3, y3) {
 	c.fill();
 }
 
-//Arrays for the particle, coin, and orb entities.
+//Arrays for the particle, coin, orb, and bomb entities.
 var particles = [];
 
 var coins = [];
 
 var orbs = [];
+
+var bombs = [];
 
 //Current level
 var level = 0;
@@ -82,14 +84,14 @@ var levels = [
 		".                                     .",
 		".                                     .",
 		".                                     .",
-		".                                S    .",
-		".                          S          .",
-		".                            S        .",
-		".                              S      .",
+		".                                B    .",
+		".                          B          .",
+		".                            B        .",
+		".                              B      .",
 		".                                     .",
 		"..                                    .",
 		".                                     .",
-		"..                    P           S   .",
+		"..                    P           B   .",
 		".              ........................",
 		". p          ^.........................",
 		"......................................."
@@ -129,6 +131,7 @@ for (var i = 0 ; i < levels.length ; i++) {
 	orbs.push([]);
 	coins.push([]);
 	enemies.push([]);
+    bombs.push([]);
 	//Loop through the rows of the strings.
 	for (var t = 0 ; t < levels[i].length ; t++) {
 		//Loop through the individual characters in the strings.
@@ -179,6 +182,8 @@ for (var i = 0 ; i < levels.length ; i++) {
 				case "S":
 					enemies[i].push(new Walker(j*27, t*27, 23, 23));
 					break;
+                case "B":
+                    bombs[i].push(new Bomb(j*27));
 			}
 		}   
 	}
