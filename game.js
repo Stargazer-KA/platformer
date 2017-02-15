@@ -84,14 +84,14 @@ var levels = [
 		".                                     .",
 		".                                     .",
 		".                                     .",
-		".                                B    .",
+		".                                     .",
 		".                          B          .",
-		".                            B        .",
-		".                              B      .",
+		".                                     .",
+		".                                     .",
 		".                                     .",
 		"..                                    .",
 		".                                     .",
-		"..                    P           B   .",
+		"..                    P               .",
 		".              ........................",
 		". p          ^.........................",
 		"......................................."
@@ -183,7 +183,7 @@ for (var i = 0 ; i < levels.length ; i++) {
 					enemies[i].push(new Walker(j*27, t*27, 23, 23));
 					break;
                 case "B":
-                    bombs[i].push(new Bomb(j*27));
+                    bombs[i].push(new Bomb(j*27, t*27, 0, 0, 23/2, 200));
 			}
 		}   
 	}
@@ -264,6 +264,17 @@ Game.prototype.interact = function() {
 	for (var i = 0 ; i < orbs[level].length ; i++) {
 		orbs[level][i].draw();
 		orbs[level][i].update();
+	}
+	
+	//Draws all the bombs.
+	for (var i = 0 ; i < bombs[level].length ; i++) {
+		if (bombs[level][i].timer > 3) {
+			bombs[level][i].draw();
+		}
+		bombs[level][i].update();
+		if (bombs[level][i].timer < 0) {
+			bombs[level].splice(i, 1);
+		}
 	}
 	
 	//Draws all particles and deletes ones that have disappeared.
