@@ -350,6 +350,7 @@ Game.prototype.interact = function() {
 		bob.velX = 0;
 		bob.velY = 0;
 		enemies[level] = [];
+		bombs[level] = [];
 		
 		//Respawn blocks and enemies.
 		for (var i = 0 ; i < blocks[level].length ; i++) {
@@ -366,6 +367,9 @@ Game.prototype.interact = function() {
 						break;
 					case "b":
 						blocks[level].push(new Block(j*27, t*27, 28, 28, "breaker"));
+						break;
+					case "B":
+						bombs[level].push(new Bomb(j*27, t*27, 0, 0, 23/2, 200));
 						break;
 				}
 			}   
