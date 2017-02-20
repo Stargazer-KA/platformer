@@ -51,6 +51,10 @@ function triangle(x1, y1, x2, y2, x3, y3) {
 	c.fill();
 }
 
+function dist(x1, y1, x2, y2) {
+	return Math.sqrt( Math.pow((x1-x2), 2) + Math.pow((y1-y2), 2) );
+}
+
 //Arrays for the particle, coin, orb, and bomb entities.
 var particles = [];
 

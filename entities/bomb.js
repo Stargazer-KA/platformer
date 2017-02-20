@@ -13,6 +13,7 @@ var Bomb = function(x, y, velx, vely, size, timer) {
     this.timer = timer;
     
     this.falling = true;
+	this.exploding = false;
 }
 
 Bomb.prototype.draw = function() {
@@ -85,4 +86,5 @@ Bomb.prototype.explode = function() {
 		var x = Math.round(random(50, 100));
 		particles.push(new Particle3(this.x+this.width/2, this.y+this.height/2, Math.cos(random(0, Math.PI*2))*3, Math.sin(random(0, Math.PI*2))*3, 10, "rgb("+x+","+x+","+x+")"));
 	}
+	this.exploding = true;
 }

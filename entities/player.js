@@ -333,6 +333,11 @@ Player.prototype.collide = function(velX, velY) {
 			}
 		} 
 	}
+	for (var i = 0 ; i < bombs[level].length ; i++) {
+		if (bombs[level][i].exploding && dist(this.x, this.y, bombs[level][i].x, bombs[level][i].y) < 50) {
+			this.die();
+		}
+	}
 }
 
 Player.prototype.die = function() {
