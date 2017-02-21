@@ -90,10 +90,10 @@ var levels = [
 		".                                     .",
 		".                                     .",
 		".                          B          .",
+		".                                   F .",
 		".                                     .",
-		".                                     .",
-		".                                     .",
-		"..                                    .",
+		".                               F     .",
+		"..                        F           .",
 		".                                     .",
 		"..                    P               .",
 		".              ........................",
@@ -188,6 +188,10 @@ for (var i = 0 ; i < levels.length ; i++) {
 					break;
                 case "B":
                     bombs[i].push(new Bomb(j*27, t*27, 0, 0, 23/2, 200));
+					break;
+				case "F":
+					enemies[i].push(new Flyer(j*27, t*27, 23, 23));
+					break;
 			}
 		}   
 	}
@@ -371,6 +375,8 @@ Game.prototype.interact = function() {
 					case "B":
 						bombs[level].push(new Bomb(j*27, t*27, 0, 0, 23/2, 200));
 						break;
+					case "F":
+						enemies[level].push(new Flyer(j*27, t*27, 23, 23));
 				}
 			}   
 		}

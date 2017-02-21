@@ -324,14 +324,14 @@ Player.prototype.collide = function(velX, velY) {
 		}
 	}
 	for (var i = 0 ; i < enemies[level].length ; i++) {
-		if (rectCollide(this, enemies[level][i]) && enemies[level][i].type() === "Walker") {
+		if (rectCollide(this, enemies[level][i]) && (enemies[level][i].type() === "Walker" || enemies[level][i].type() === "Flyer")) {
 			if (velY > 0) {
 				this.velY=-5;
 				enemies[level][i].die();
 			} else {
 				this.die();
 			}
-		} 
+		}
 	}
 	for (var i = 0 ; i < bombs[level].length ; i++) {
 		if (bombs[level][i].exploding && dist(this.x, this.y, bombs[level][i].x, bombs[level][i].y) < 50) {
