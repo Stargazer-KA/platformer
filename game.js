@@ -90,9 +90,9 @@ var levels = [
 		".                                     .",
 		".                                     .",
 		".                          B          .",
-		".                                   F .",
 		".                                     .",
-		".                               F     .",
+		".                                     .",
+		".           F                   QQQQ  .",
 		"..                        F           .",
 		".                                     .",
 		"..                    P               .",
@@ -192,6 +192,8 @@ for (var i = 0 ; i < levels.length ; i++) {
 				case "F":
 					enemies[i].push(new Flyer(j*27, t*27, 23, 23));
 					break;
+                case "Q":
+                    blocks[i].push(new Block(j*27, t*27, 28, 28, "bomb spawner"));
 			}
 		}   
 	}
@@ -221,7 +223,7 @@ var Game = function() {
 
 //All the stuff going on in the game.
 Game.prototype.interact = function() {
-	
+    
 	//Moves the camera towards the player through easing
 	Camera.x += (bob.x-Camera.x)/5;
     Camera.y += (bob.y-Camera.y)/5;
@@ -289,7 +291,7 @@ Game.prototype.interact = function() {
 	for (var i = 0 ; i < particles.length ; i++) {
 		particles[i].draw();
 		particles[i].update();
-		if (particles[i].s <= 0) {
+		if (particles[i].s <= 0.1) {
 			particles.splice(i, 1);
 			i--;
 		}

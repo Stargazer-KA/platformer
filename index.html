@@ -11,7 +11,18 @@
 		
         <style>
             
-            
+            body {
+			  background-color: #444444;
+			}
+
+			canvas {
+			  transform: translate(-50%, -50%);
+			  background-color: #FFFFFF;
+			  position: absolute;
+			  top: 50%;
+			  left: 50%;
+			}
+
             
         </style>
         
@@ -21,11 +32,13 @@
         
 		<script type="text/javascript" src="buzz.js"></script>
 		
-        <canvas id="ctx" width="700" height="500" style="border: 2px solid #555555;"></canvas>
+        <canvas id="ctx" width="700" height="500"></canvas>
         
 		<script type="text/javascript" src="entities/bomb.js"></script>
 		
 		<script type="text/javascript" src="entities/enemies/walker.js"></script>
+		
+		<script type="text/javascript" src="entities/enemies/flyer.js"></script>
 		
 		<script type="text/javascript" src="entities/particle.js"></script>
 		
@@ -38,15 +51,6 @@
 		<script type="text/javascript" src="entities/player.js"></script>
 		
         <script type="text/javascript" src="game.js"></script>
-        
-		<br>
-		
-		<code>
-			"Bit Quest", "Nowhere Land"
-			Kevin MacLeod (incompetech.com)
-			Licensed under Creative Commons: By Attribution 3.0
-			http://creativecommons.org/licenses/by/3.0/
-		</code>
 		
     </body>
     

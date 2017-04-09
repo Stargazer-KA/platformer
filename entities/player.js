@@ -143,7 +143,7 @@ Player.prototype.collide = function(velX, velY) {
 		if (!(blocks[level][i].x > -Camera.x+330 && blocks[level][i].x < Camera.x + 420 && blocks[level][i].y > -Camera.y+120 && blocks[level][i].y < Camera.y + 300)) {
 			continue;
 		}
-        if (rectCollide(this, blocks[level][i]) && (blocks[level][i].type === "normal" || blocks[level][i].type === "electric")) {
+        if (rectCollide(this, blocks[level][i]) && (blocks[level][i].type === "normal" || blocks[level][i].type === "electric" || blocks[level][i].type === "bomb spawner")) {
             if (velX > 0) {
                 this.velX = 0;
                 this.x = blocks[level][i].x-this.width;
