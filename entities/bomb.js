@@ -48,6 +48,10 @@ Bomb.prototype.update = function() {
         this.explode();
     }
     
+    if (this.timer === 10) {
+        game.screenShake += 3;
+    }
+    
 }
 
 Bomb.prototype.collide = function(velx, vely) {

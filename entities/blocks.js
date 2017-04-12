@@ -107,6 +107,7 @@ Block.prototype.draw = function() {
             if (frameCount%this.r === 0) {
                 bombs[level].push(new Bomb(this.x+this.width/2, this.y+this.height/2, random(-10, 10), -5, 23/2, 200));
             }
+            break;
             
 	}            
 }

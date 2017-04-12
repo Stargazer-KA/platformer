@@ -22,13 +22,27 @@ Bullet.prototype.draw = function() {
 Bullet.prototype.update = function() {
 	
 	this.x+=this.velX;
+    this.collide(this.velX, 0);
 	this.y+=this.velY;
-	
+    this.collide(0, this.velY);
+    
 }
 
 Bullet.prototype.collide = function(velx, vely) {
-    for (var i = 0 ; i < blocks[level].legnth ; i++) {
-        if (rectCollide(this, blocks[level][i])) {
+    for (var i = 0 ; i < blocks[level].length ; i++) {
+        if (rectCollide(this, blocks[level][i]) && (blocks[level][i].type === "normal" || blocks[level][i].type === "electric")) {
+            if (velx > 0) {
+                this.x = blocks[level][i].x-this.width;
+            }
+            if (velx < 0) {
+                this.x = blocks[level][i].x+blocks[level][i].width;
+            }
+            if (vely > 0) {
+                this.y = blocks[level][i].y-this.height;
+            } 
+            if (vely < 0) {
+                this.y = blocks[level][i].y+blocks[level][i].height;
+			}
             this.pop();
         }
     }
@@ -37,7 +51,7 @@ Bullet.prototype.collide = function(velx, vely) {
 Bullet.prototype.pop = function() {
     
     for (var t = 0 ; t < 5 ; t++) {
-		particles.push(new Particle(blocks[level][i].x+blocks[level][i].width/2, blocks[level][i].y+blocks[level][i].height/2, Math.cos(random(0, Math.PI*2))*3, Math.sin(random(0, Math.PI*2))*3, 10, this.color));
+		particles.push(new Particle(this.x, this.y, Math.cos(random(0, Math.PI*2))*3, Math.sin(random(0, Math.PI*2))*3, this.width/1.3, this.color));
     }
     
     this.dead = true;

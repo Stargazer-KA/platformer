@@ -64,6 +64,8 @@ var orbs = [];
 
 var bombs = [];
 
+var bullets = [];
+
 //Current level
 var level = 0;
 
@@ -92,8 +94,8 @@ var levels = [
 		".                          B          .",
 		".                                     .",
 		".                                     .",
-		".           F                   QQQQ  .",
-		"..                        F           .",
+		".           F                         .",
+		"..                        F      QQQQ .",
 		".                                     .",
 		"..                    P               .",
 		".              ........................",
@@ -194,6 +196,7 @@ for (var i = 0 ; i < levels.length ; i++) {
 					break;
                 case "Q":
                     blocks[i].push(new Block(j*27, t*27, 28, 28, "bomb spawner"));
+                    break;
 			}
 		}   
 	}
@@ -219,6 +222,9 @@ var Game = function() {
 	//Initiallize two timer variables.
 	this.t = 0;
 	this.dTimer = 0;
+    this.screenShake = 0;
+    this.shakeX = 0;
+    this.shakeY = 0;
 };
 
 //All the stuff going on in the game.
@@ -250,6 +256,16 @@ Game.prototype.interact = function() {
 	//Moves the entities according to the player.
 	c.translate(-Camera.x + 350-bob.width/2, -Camera.y+250-bob.height/2);
 	
+    c.translate(this.shakeX, this.shakeY);
+    this.shakeX = random(-this.screenShake, this.screenShake);
+    this.shakeY = random(-this.screenShake, this.screenShake);
+    if (this.screenShake > 0.1) {
+        this.screenShake/=1.5;
+    }
+    if (this.screenShake > 20) {
+        this.screenShake = 20;
+    }
+    
 	//Draws all blocks onscreen, and splices broken blocks.
 	for (var i = 0 ; i < blocks[level].length ; i++) {
 		if (blocks[level][i].x > -Camera.x+330 && blocks[level][i].x < Camera.x + 360 && blocks[level][i].y > -Camera.y+220 && blocks[level][i].y < Camera.y + 260) {
@@ -307,6 +323,15 @@ Game.prototype.interact = function() {
 		}
 	}
 	
+    for (var i = 0 ; i < bullets.length ; i++) {
+        bullets[i].draw();
+        bullets[i].update();
+        if (bullets[i].dead) {
+            bullets.splice(i, 1);
+            i--;
+        }
+    }
+    
 	//Draws all the messages onscreen 
 	for (var i = 0 ; i < messages[level].length ; i++) {
 		var t = messages[level][i];
