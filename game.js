@@ -130,10 +130,13 @@ var enemies = [];
 
 var blocks = [];
 
+var activeblocks = [];
+
 //Processes the levels array and turns the text into readable blocks.
 for (var i = 0 ; i < levels.length ; i++) {
 	//Adds empty arrays to arrays filled with entities to seperate entities by level.
 	blocks.push([]);
+    activeblocks.push([]);
 	orbs.push([]);
 	coins.push([]);
 	enemies.push([]);
@@ -148,7 +151,7 @@ for (var i = 0 ; i < levels.length ; i++) {
 					blocks[i].push(new Block(j*27, t*27, 28, 28, "normal"));
 					break;
 				case "b":
-					blocks[i].push(new Block(j*27, t*27, 28, 28, "breaker"));
+					activeblocks[i].push(new ActiveBlock(j*27, t*27, 28, 28, "breaker"));
 					break;
 				case "p":
 					blocks[i].push(new Block(j*27+3, t*27+3, 21, 21, "portal"));
@@ -195,7 +198,7 @@ for (var i = 0 ; i < levels.length ; i++) {
 					enemies[i].push(new Flyer(j*27, t*27, 23, 23));
 					break;
                 case "Q":
-                    blocks[i].push(new Block(j*27, t*27, 28, 28, "bomb spawner"));
+                    activeblocks[i].push(new ActiveBlock(j*27, t*27, 28, 28, "bomb spawner"));
                     break;
 			}
 		}   
@@ -271,16 +274,22 @@ Game.prototype.interact = function() {
 		if (blocks[level][i].x > -Camera.x+330 && blocks[level][i].x < Camera.x + 360 && blocks[level][i].y > -Camera.y+220 && blocks[level][i].y < Camera.y + 260) {
 			blocks[level][i].draw();
 		}
-		if (blocks[level][i].destroyed) {
+	}
+	
+	for (var i = 0 ; i < activeblocks[level].length ; i++) {
+		
+        activeblocks[level][i].draw();
+		
+		if (activeblocks[level][i].destroyed) {
 			for (var t = 0 ; t < 5 ; t++) {
-				particles.push(new Particle(blocks[level][i].x+blocks[level][i].width/2, blocks[level][i].y+blocks[level][i].height/2, Math.cos(random(0, Math.PI*2))*3, Math.sin(random(0, Math.PI*2))*3, 10, "rgb(20, 20, 20)"));
+				particles.push(new Particle(activeblocks[level][i].x+activeblocks[level][i].width/2, activeblocks[level][i].y+activeblocks[level][i].height/2, Math.cos(random(0, Math.PI*2))*3, Math.sin(random(0, Math.PI*2))*3, 10, "rgb(20, 20, 20)"));
 			}
-			blocks[level].splice(i, 1);
+			activeblocks[level].splice(i, 1);
 			sounds.push(new buzz.sound("soundfx/Break.wav").setVolume(60));
 			i--;
 		}
 	}
-	
+    
 	//Draws all the coins.
 	for (var i = 0 ; i < coins[level].length ; i++) {
 		coins[level][i].draw();
@@ -384,9 +393,9 @@ Game.prototype.interact = function() {
 		bombs[level] = [];
 		
 		//Respawn blocks and enemies.
-		for (var i = 0 ; i < blocks[level].length ; i++) {
-			if (blocks[level][i].type === "breaker") {
-				blocks[level].splice(i, 1);
+		for (var i = 0 ; i < activeblocks[level].length ; i++) {
+			if (activeblocks[level][i].type === "breaker") {
+				activeblocks[level].splice(i, 1);
 				i--;
 			}
 		}
@@ -397,7 +406,7 @@ Game.prototype.interact = function() {
 						enemies[level].push(new Walker(j*27, t*27, 23, 23));
 						break;
 					case "b":
-						blocks[level].push(new Block(j*27, t*27, 28, 28, "breaker"));
+						activeblocks[level].push(new ActiveBlock(j*27, t*27, 28, 28, "breaker"));
 						break;
 					case "B":
 						bombs[level].push(new Bomb(j*27, t*27, 0, 0, 23/2, 200));

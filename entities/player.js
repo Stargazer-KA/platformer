@@ -143,56 +143,7 @@ Player.prototype.collide = function(velX, velY) {
 		if (!(blocks[level][i].x > -Camera.x+330 && blocks[level][i].x < Camera.x + 420 && blocks[level][i].y > -Camera.y+120 && blocks[level][i].y < Camera.y + 300)) {
 			continue;
 		}
-        if (rectCollide(this, blocks[level][i]) && (blocks[level][i].type === "normal" || blocks[level][i].type === "electric" || blocks[level][i].type === "bomb spawner")) {
-            if (velX > 0) {
-                this.velX = 0;
-                this.x = blocks[level][i].x-this.width;
-				if (keys["ArrowRight"]) {
-					this.clingWall = "right";
-					if (frameCount%2 === 0 && this.velY > 0.4) {
-						particles.push(new Particle(this.x+this.width, this.y, Math.cos(random(0, Math.PI*2)), Math.sin(random(0, Math.PI*2)), 4, "rgb(10, 10, 10)"));
-					}
-					this.velY/=1.1;
-					if (this.velY > -0.3 && this.velY < 0.3) {
-						this.falling = false;
-					}
-					this.wallJumped = true;
-				} else {
-					this.clingWall = "none";
-				}
-            }
-            if (velX < 0) {
-                this.velX = 0;
-                this.x = blocks[level][i].x+blocks[level][i].width;
-				if (keys["ArrowLeft"]) {
-					this.clingWall = "left";
-					if (frameCount%2 === 0 && this.velY > 0.4) {
-						particles.push(new Particle(this.x, this.y, Math.cos(random(0, Math.PI*2)), Math.sin(random(0, Math.PI*2)), 4, "rgb(10, 10, 10)"));
-					}
-					this.velY/=1.1;
-					if (this.velY > -2 && this.velY < 0.3) {
-						this.falling = false;
-					}
-					this.wallJumped = true;
-				} else {
-					this.clingWall = "none";
-				}
-            }
-            if (velY > 0) {
-                this.velY = 0;
-                this.y = blocks[level][i].y-this.height;
-				this.wallJumped = false;
-				this.falling = false;
-            }
-            if (velY < 0) {
-                this.velY = 0;
-                this.y = blocks[level][i].y+blocks[level][i].height;
-            	this.falling = true;
-			}
-			continue;
-        }
-		if (rectCollide(this, blocks[level][i]) && blocks[level][i].type === "breaker") {
-			blocks[level][i].isRunning = true;
+        if (rectCollide(this, blocks[level][i]) && (blocks[level][i].type === "normal" || blocks[level][i].type === "electric")) {
             if (velX > 0) {
                 this.velX = 0;
                 this.x = blocks[level][i].x-this.width;
@@ -323,6 +274,105 @@ Player.prototype.collide = function(velX, velY) {
 			break;
 		}
 	}
+    for (var i = 0 ; i < activeblocks[level].length ; i++) {
+        if (rectCollide(this, activeblocks[level][i]) && (activeblocks[level][i].type === "bomb spawner")) {
+            if (velX > 0) {
+                this.velX = 0;
+                this.x = activeblocks[level][i].x-this.width;
+				if (keys["ArrowRight"]) {
+					this.clingWall = "right";
+					if (frameCount%2 === 0 && this.velY > 0.4) {
+						particles.push(new Particle(this.x+this.width, this.y, Math.cos(random(0, Math.PI*2)), Math.sin(random(0, Math.PI*2)), 4, "rgb(10, 10, 10)"));
+					}
+					this.velY/=1.1;
+					if (this.velY > -0.3 && this.velY < 0.3) {
+						this.falling = false;
+					}
+					this.wallJumped = true;
+				} else {
+					this.clingWall = "none";
+				}
+            }
+            if (velX < 0) {
+                this.velX = 0;
+                this.x = activeblocks[level][i].x+activeblocks[level][i].width;
+				if (keys["ArrowLeft"]) {
+					this.clingWall = "left";
+					if (frameCount%2 === 0 && this.velY > 0.4) {
+						particles.push(new Particle(this.x, this.y, Math.cos(random(0, Math.PI*2)), Math.sin(random(0, Math.PI*2)), 4, "rgb(10, 10, 10)"));
+					}
+					this.velY/=1.1;
+					if (this.velY > -2 && this.velY < 0.3) {
+						this.falling = false;
+					}
+					this.wallJumped = true;
+				} else {
+					this.clingWall = "none";
+				}
+            }
+            if (velY > 0) {
+                this.velY = 0;
+                this.y = activeblocks[level][i].y-this.height;
+				this.wallJumped = false;
+				this.falling = false;
+            }
+            if (velY < 0) {
+                this.velY = 0;
+                this.y = activeblocks[level][i].y+activeblocks[level][i].height;
+            	this.falling = true;
+			}
+			continue;
+        }
+        if (rectCollide(this, activeblocks[level][i]) && activeblocks[level][i].type === "breaker") {
+			activeblocks[level][i].isRunning = true;
+            if (velX > 0) {
+                this.velX = 0;
+                this.x = activeblocks[level][i].x-this.width;
+				if (keys["ArrowRight"]) {
+					this.clingWall = "right";
+					if (frameCount%2 === 0 && this.velY > 0.4) {
+						particles.push(new Particle(this.x+this.width, this.y, Math.cos(random(0, Math.PI*2)), Math.sin(random(0, Math.PI*2)), 4, "rgb(10, 10, 10)"));
+					}
+					this.velY/=1.1;
+					if (this.velY > -0.3 && this.velY < 0.3) {
+						this.falling = false;
+					}
+					this.wallJumped = true;
+				} else {
+					this.clingWall = "none";
+				}
+            }
+            if (velX < 0) {
+                this.velX = 0;
+                this.x = activeblocks[level][i].x+activeblocks[level][i].width;
+				if (keys["ArrowLeft"]) {
+					this.clingWall = "left";
+					if (frameCount%2 === 0 && this.velY > 0.4) {
+						particles.push(new Particle(this.x, this.y, Math.cos(random(0, Math.PI*2)), Math.sin(random(0, Math.PI*2)), 4, "rgb(10, 10, 10)"));
+					}
+					this.velY/=1.1;
+					if (this.velY > -2 && this.velY < 0.3) {
+						this.falling = false;
+					}
+					this.wallJumped = true;
+				} else {
+					this.clingWall = "none";
+				}
+            }
+            if (velY > 0) {
+                this.velY = 0;
+                this.y = activeblocks[level][i].y-this.height;
+				this.wallJumped = false;
+				this.falling = false;
+            }
+            if (velY < 0) {
+                this.velY = 0;
+                this.y = activeblocks[level][i].y+activeblocks[level][i].height;
+            	this.falling = true;
+			}
+			continue;
+    }
+    }
 	for (var i = 0 ; i < enemies[level].length ; i++) {
 		if (rectCollide(this, enemies[level][i]) && (enemies[level][i].type() === "Walker" || enemies[level][i].type() === "Flyer")) {
 			if (velY > 0) {
