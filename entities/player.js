@@ -21,6 +21,7 @@ var Player = function() {
 	this.coinFade = 0;
 	this.coinFadeTimer = 0;
 	this.coinTextSize = 20;
+    this.coinCollected = false;
 	
 }
 
@@ -101,7 +102,12 @@ Player.prototype.interact = function() {
 	}
 	 
 	if (this.coinFadeTimer === 30) {
-		this.coins++;
+        if (this.coinCollected) {
+            this.coins++;
+        } else {
+            this.coins--;
+            sounds.push(new buzz.sound("soundfx/Coin2.wav").setVolume(30));
+        }
 	}
 	
 	if (this.coinFadeTimer === 30) {
@@ -128,6 +134,7 @@ Player.prototype.collide = function(velX, velY) {
 			sounds.push(new buzz.sound("soundfx/Coin.wav").setVolume(30));
 			this.coinFadeTimer = 50;
 			coins[level].splice(i, 1);
+            this.coinCollected = true;
 		}
 	}
 	//Handles collisions for electrical orbs
@@ -177,6 +184,28 @@ Player.prototype.collide = function(velX, velY) {
 				} else {
 					this.clingWall = "none";
 				}
+            }
+            if (velY > 0) {
+                this.velY = 0;
+                this.y = blocks[level][i].y-this.height;
+				this.wallJumped = false;
+				this.falling = false;
+            }
+            if (velY < 0) {
+                this.velY = 0;
+                this.y = blocks[level][i].y+blocks[level][i].height;
+            	this.falling = true;
+			}
+			continue;
+        }
+        if (rectCollide(this, blocks[level][i]) && (blocks[level][i].type === "invisiblock")) {
+            if (velX > 0) {
+                this.velX = 0;
+                this.x = blocks[level][i].x-this.width;
+            }
+            if (velX < 0) {
+                this.velX = 0;
+                this.x = blocks[level][i].x+blocks[level][i].width;
             }
             if (velY > 0) {
                 this.velY = 0;
@@ -256,6 +285,7 @@ Player.prototype.collide = function(velX, velY) {
 		if (rectCollide(this, blocks[level][i]) && (blocks[level][i].type === "portal")) {
 			sounds.push(new buzz.sound("soundfx/Portal.wav").setVolume(40));
 			level++;
+            this.coinCollected = false;
 			for (var i = 0 ; i < levels[level].length ; i++) {
 				for (var t = 0 ; t < levels[level][i].length ; t++) {
 					if (levels[level][i][t] === "P") {
@@ -397,4 +427,9 @@ Player.prototype.die = function() {
 	}
 	game.dTimer = 60;
 	this.falling = false;
+    if (this.coinCollected) {
+        this.coinCollected = false;
+        
+        this.coinFadeTimer = 50;
+    }
 }
